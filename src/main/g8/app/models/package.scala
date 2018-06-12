@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
-
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-import services.EnrolmentsAuthService
-
 import scala.concurrent.Future
 
+package object models {
 
-@Singleton()
-class HelloWorldController @Inject()(val authService: EnrolmentsAuthService)
-  extends AuthorisedController {
-
-  def hello(): Action[AnyContent] = authorisedAction() { implicit request =>
-    Future.successful(Ok("Hello world"))
-  }
-
+  type ServiceResponse[T, E] = Future[Either[T, E]]
 }

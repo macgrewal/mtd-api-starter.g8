@@ -16,34 +16,31 @@
 
 package controllers
 
+import models.ServiceResponse
+import models.errors.AuthError
 import play.api.http.Status
 import services.EnrolmentsAuthService
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class HelloWorldControllerSpec extends ControllerBaseSpec {
 
   private trait Test {
-    val authResult: Future[_] = Future.successful({})
+    val authResult: ServiceResponse[AuthError, Boolean] = Future.successful(Right(true))
 
-    val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    val mockAuthService: EnrolmentsAuthService = mock[EnrolmentsAuthService]
 
     def setup(): Any = {
-      (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-        .expects(*, *, *, *)
-        .returns(authResult)
+      (mockAuthService.authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(*, *, *)
+        .returning(authResult)
     }
-
-    val mockEnrolmentsAuthService: EnrolmentsAuthService = new EnrolmentsAuthService(mockAuthConnector)
 
     lazy val target: HelloWorldController = {
       setup()
-      new HelloWorldController(mockEnrolmentsAuthService)
+      new HelloWorldController(mockAuthService)
     }
   }
 

@@ -16,7 +16,6 @@
 
 package controllers
 
-import akka.actor.ActorSystem
 import org.scalamock.scalatest.MockFactory
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.HeaderNames
@@ -28,8 +27,6 @@ import uk.gov.hmrc.play.test.UnitSpec
 class ControllerBaseSpec extends UnitSpec with MockFactory with GuiceOneAppPerSuite {
 
   lazy val injector: Injector = app.injector
-
-  implicit val system: ActorSystem = ActorSystem()
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 

@@ -16,10 +16,11 @@
 
 package controllers
 
+import models.errors.AuthError
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EnrolmentsAuthService
-import uk.gov.hmrc.auth.core.{AuthorisationException, MissingBearerToken}
+import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,16 +28,16 @@ import scala.concurrent.Future
 
 abstract class AuthorisedController extends BaseController {
 
-  val enrolmentsAuthService: EnrolmentsAuthService
+  val authService: EnrolmentsAuthService
 
-  def authorisedAction(block: Request[AnyContent] => Future[Result]): Action[AnyContent] = Action.async {
+  def authorisedAction(predicate: Predicate = EmptyPredicate)
+                      (block: Request[AnyContent] => Future[Result]): Action[AnyContent] = Action.async {
     implicit request =>
 
-      enrolmentsAuthService.authorised() {
-        block(request)
-      } recoverWith {
-        case _: MissingBearerToken => Future.successful(Unauthorized(Json.obj()))
-        case _: AuthorisationException => Future.successful(Forbidden(Json.obj()))
+      authService.authorised(predicate) flatMap {
+        case Right(_) => block(request)
+        case Left(AuthError(false, _)) => Future.successful(Unauthorized(Json.obj()))
+        case Left(_) => Future.successful(Forbidden(Json.obj()))
       }
   }
 }
