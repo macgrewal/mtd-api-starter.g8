@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-import sbt.Setting
-import scoverage.ScoverageKeys
+package v2.controllers
 
-object CodeCoverageSettings {
+import javax.inject.{Inject, Singleton}
+import play.api.mvc.{Action, AnyContent}
+import v2.services.{EnrolmentsAuthService, MtdIdLookupService}
 
-  private val excludedPackages: Seq[String] = Seq(
-    "<empty>",
-    "Reverse.*",
-    "uk.gov.hmrc.BuildInfo",
-    "app.*",
-    "prod.*",
-    ".*Routes.*",
-    "v2.config.*",
-    "testOnly.*",
-    "testOnlyDoNotUseInAppConf.*"
-  )
+import scala.concurrent.Future
 
-  val settings: Seq[Setting[_]] = Seq(
-    ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimum := 95,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
-  )
+@Singleton
+class SampleController @Inject()(val authService: EnrolmentsAuthService,
+                                 val lookupService: MtdIdLookupService) extends AuthorisedController {
+
+  def doSomething(nino: String): Action[AnyContent] = authorisedAction(nino).async { implicit request =>
+    Future.successful(Ok(request.mtdId))
+  }
 }
