@@ -1,8 +1,8 @@
-# MTD Tax Calualation Service
+# $name$
 
 [![Build Status](https://travis-ci.org/hmrc/$name$.svg)](https://travis-ci.org/hmrc/$name$) [ ![Download](https://api.bintray.com/packages/hmrc/releases/$name$/images/download.svg) ](https://bintray.com/hmrc/releases/$name$/_latestVersion)
 
-This service retrieves the MTD tax calculation.
+This service manages the $name$.
 
 ### License
 
