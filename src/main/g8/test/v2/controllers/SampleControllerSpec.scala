@@ -18,7 +18,7 @@ package v2.controllers
 
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v2.models.errors.{InvalidNinoError, UnauthorisedError}
+import v2.models.errors.{NinoFormatError, UnauthorisedError}
 
 import scala.concurrent.Future
 
@@ -52,7 +52,7 @@ class SampleControllerSpec extends ControllerBaseSpec {
       "a invalid NI number is passed" in new Test {
 
         MockedMtdIdLookupService.lookup(nino)
-          .returns(Future.successful(Left(InvalidNinoError)))
+          .returns(Future.successful(Left(NinoFormatError)))
 
         private val result = target.doSomething(nino)(fakeGetRequest)
         status(result) shouldBe BAD_REQUEST

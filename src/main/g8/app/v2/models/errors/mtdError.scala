@@ -16,12 +16,15 @@
 
 package v2.models.errors
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-trait MtdError
+case class MtdError(code: String, message: String)
 
-case class Error(code: String, message: String) extends MtdError
-
-object Error {
-  implicit val format: OFormat[Error] = Json.format[Error]
+object MtdError {
+  implicit val writes: Writes[MtdError] = Json.writes[MtdError]
+  implicit val reads: Reads[MtdError] = (
+    (__ \ "code").read[String] and
+      (__ \ "reason").read[String]
+    ) (MtdError.apply _)
 }

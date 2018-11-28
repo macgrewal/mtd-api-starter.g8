@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package v2.models.errors
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent}
-import v2.services.{EnrolmentsAuthService, MtdIdLookupService}
+sealed trait DesError
 
-import scala.concurrent.Future
-
-@Singleton
-class SampleController @Inject()(val authService: EnrolmentsAuthService,
-                                 val lookupService: MtdIdLookupService) extends AuthorisedController {
-
-  def doSomething(nino: String): Action[AnyContent] = authorisedAction(nino).async { implicit request =>
-    Future.successful(Ok(request.userDetails.mtdId))
-  }
-}
+case class SingleError(error: MtdError) extends DesError
+case class MultipleErrors(errors: Seq[MtdError]) extends DesError
+case class BvrErrors(errors: Seq[MtdError]) extends DesError
+case class GenericError(error: MtdError) extends DesError

@@ -70,7 +70,7 @@ class AuthISpec extends IntegrationBaseSpec {
 
     "an MTD ID is successfully retrieve from the NINO and the user is NOT logged in" should {
 
-      "return 401" in new Test {
+      "return 403" in new Test {
         override val nino: String = "AA123456A"
 
         override def setupStubs(): StubMapping = {
@@ -80,7 +80,7 @@ class AuthISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.UNAUTHORIZED
+        response.status shouldBe Status.FORBIDDEN
       }
     }
 

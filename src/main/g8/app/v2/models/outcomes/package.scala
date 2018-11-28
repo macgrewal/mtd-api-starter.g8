@@ -16,11 +16,12 @@
 
 package v2.models
 
+import v2.models.auth.UserDetails
 import v2.models.errors.MtdError
 
 package object outcomes {
 
-  type AuthOutcome = Either[MtdError, Boolean]
+  type AuthOutcome = Either[MtdError, UserDetails]
   type MtdIdLookupOutcome = Either[MtdError, String]
 
 }

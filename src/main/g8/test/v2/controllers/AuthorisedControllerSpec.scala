@@ -83,7 +83,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       "return a 400" in new Test {
 
         MockedMtdIdLookupService.lookup(nino)
-          .returns(Future.successful(Left(InvalidNinoError)))
+          .returns(Future.successful(Left(NinoFormatError)))
 
         private val result = target.action(nino)(fakeGetRequest)
         status(result) shouldBe BAD_REQUEST
@@ -121,10 +121,10 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .returns(Future.successful(Right(mtdId)))
 
       MockedEnrolmentsAuthService.authorised(predicate)
-        .returns(Future.successful(Left(UnauthenticatedError)))
+        .returns(Future.successful(Left(UnauthorisedError)))
 
       private val result = target.action(nino)(fakeGetRequest)
-      status(result) shouldBe UNAUTHORIZED
+      status(result) shouldBe FORBIDDEN
     }
   }
 
